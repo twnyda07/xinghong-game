@@ -1,24 +1,361 @@
 <!DOCTYPE html>
 <html lang="zh-Hant">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>我的網頁</title>
-  <style>
-    body {
-      font-family: "Microsoft JhengHei", system-ui, sans-serif;
-      display: flex; flex-direction: column;
-      align-items: center; justify-content: center;
-      min-height: 100vh; margin: 0;
-      background: linear-gradient(135deg, #1a1a2e, #16213e);
-      color: #fff; text-align: center;
-    }
-    h1 { font-size: 2rem; }
-    p { color: #9aa5c4; }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>教觀綱宗・闖關之旅</title>
+<style>
+  :root{
+    --bg1:#1a1430; --bg2:#241a45; --gold:#e9c46a; --gold-soft:#f2dca0;
+    --ink:#f3eede; --muted:#b9b1d6; --good:#7bd389; --bad:#e98b8b;
+    --card:#2e2356; --card2:#372a66; --line:#4a3c7e;
+  }
+  *{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
+  body{
+    margin:0; min-height:100vh; font-family:"Noto Sans TC","Microsoft JhengHei",system-ui,sans-serif;
+    color:var(--ink); background:radial-gradient(120% 100% at 50% 0%,var(--bg2),var(--bg1));
+    display:flex; justify-content:center; padding:18px;
+  }
+  .wrap{width:100%; max-width:680px;}
+  /* 頂部 */
+  header{text-align:center; margin:8px 0 14px;}
+  header h1{font-size:1.5rem; margin:.2em 0; letter-spacing:2px;}
+  header h1 .sub{color:var(--gold); }
+  .progress{display:flex; gap:8px; justify-content:center; margin:10px 0 2px;}
+  .dot{width:10px; height:10px; border-radius:50%; background:var(--line); transition:.3s;}
+  .dot.active{background:var(--gold); transform:scale(1.25);}
+  .dot.done{background:var(--gold-soft);}
+  .beads{text-align:center; color:var(--gold); font-size:.92rem; margin-top:4px; min-height:1.2em;}
+  /* 卡片 */
+  .screen{background:linear-gradient(180deg,var(--card),var(--card2));
+    border:1px solid var(--line); border-radius:18px; padding:22px 20px;
+    box-shadow:0 14px 40px rgba(0,0,0,.35); animation:rise .35s ease;}
+  @keyframes rise{from{opacity:0; transform:translateY(14px);} to{opacity:1; transform:none;}}
+  h2{font-size:1.25rem; margin:.1em 0 .5em; color:var(--gold-soft);}
+  .lead{color:var(--muted); line-height:1.8; font-size:.98rem;}
+  .tag{display:inline-block; background:rgba(233,196,106,.16); color:var(--gold);
+    border:1px solid rgba(233,196,106,.35); padding:2px 10px; border-radius:999px; font-size:.8rem; margin-bottom:8px;}
+  /* 學習卡 */
+  .learn{display:grid; gap:10px; margin:14px 0;}
+  .item{background:rgba(255,255,255,.04); border:1px solid var(--line); border-radius:12px;
+    padding:12px 14px; display:flex; gap:12px; align-items:flex-start;}
+  .item .emo{font-size:1.5rem; line-height:1.4;}
+  .item b{color:var(--gold-soft);}
+  .item span{color:var(--muted); font-size:.92rem; line-height:1.7;}
+  /* 題目 */
+  .q{font-size:1.08rem; line-height:1.7; margin:6px 0 14px;}
+  .opts{display:grid; gap:10px;}
+  .opt{text-align:left; background:rgba(255,255,255,.05); color:var(--ink);
+    border:1.5px solid var(--line); border-radius:12px; padding:13px 15px; font-size:1rem;
+    cursor:pointer; transition:.15s; line-height:1.5;}
+  .opt:hover{border-color:var(--gold); background:rgba(233,196,106,.1);}
+  .opt.correct{border-color:var(--good); background:rgba(123,211,137,.18);}
+  .opt.wrong{border-color:var(--bad); background:rgba(233,139,139,.16);}
+  .opt:disabled{cursor:default;}
+  .feedback{margin:14px 0 4px; padding:12px 14px; border-radius:12px; line-height:1.7; font-size:.95rem; display:none;}
+  .feedback.show{display:block; animation:rise .25s ease;}
+  .feedback.ok{background:rgba(123,211,137,.12); border:1px solid var(--good);}
+  .feedback.no{background:rgba(233,139,139,.12); border:1px solid var(--bad);}
+  .feedback b{color:var(--gold-soft);}
+  /* 按鈕 */
+  .btn{display:inline-block; background:linear-gradient(180deg,var(--gold),#d8ad4e); color:#3a2a08;
+    border:none; border-radius:12px; padding:13px 26px; font-size:1.02rem; font-weight:700;
+    cursor:pointer; margin-top:8px; transition:.15s; box-shadow:0 6px 16px rgba(233,196,106,.25);}
+  .btn:hover{transform:translateY(-1px);}
+  .btn.ghost{background:transparent; color:var(--gold); border:1.5px solid var(--line); box-shadow:none;}
+  .center{text-align:center;}
+  .row{display:flex; gap:10px; flex-wrap:wrap; justify-content:center; margin-top:6px;}
+  /* 反思 */
+  .reflect label{display:block; color:var(--gold-soft); margin:16px 0 6px; line-height:1.7; font-size:1rem;}
+  .reflect textarea{width:100%; min-height:74px; resize:vertical; border-radius:12px;
+    border:1.5px solid var(--line); background:rgba(0,0,0,.18); color:var(--ink);
+    padding:12px; font-size:1rem; font-family:inherit; line-height:1.6;}
+  .reflect textarea:focus{outline:none; border-color:var(--gold);}
+  .note{color:var(--muted); font-size:.86rem; line-height:1.7; margin-top:6px;}
+  .big{font-size:2.6rem; text-align:center; margin:6px 0;}
+  footer{text-align:center; color:var(--muted); font-size:.78rem; margin:18px 0 6px; line-height:1.7;}
+  .quote{border-left:3px solid var(--gold); padding:6px 0 6px 14px; margin:14px 0; color:var(--gold-soft); line-height:1.9; font-size:1.05rem;}
+</style>
 </head>
 <body>
-  <h1>🚀 網頁準備中</h1>
-  <p>這是預留的首頁。把做好的網頁檔案覆蓋這個 index.html 即可。</p>
+<div class="wrap">
+  <header>
+    <h1>教觀綱宗 <span class="sub">闖關之旅</span></h1>
+    <div class="progress" id="progress"></div>
+    <div class="beads" id="beads"></div>
+  </header>
+  <div id="app"></div>
+  <footer>
+    依蕅益大師《教觀綱宗》天台教義編寫 ・ 佛學入門互動學習
+  </footer>
+</div>
+
+<script>
+/* ====== 遊戲資料 ====== */
+const STAGES = [
+  { /* 0 序章 */
+    type:"intro",
+    title:"歡迎來到《教觀綱宗》",
+    tag:"序章",
+    html:`
+      <p class="lead">
+        <b style="color:var(--gold-soft)">《教觀綱宗》</b> 是明朝末年
+        <b style="color:var(--gold-soft)">蕅益大師</b> 寫的一本小書，
+        把佛陀一生說的法，整理成一張清楚的「地圖」。
+      </p>
+      <p class="lead">它的核心只有兩個字 ——</p>
+      <div class="learn">
+        <div class="item"><span class="emo">📖</span><div><b>教</b><br><span>佛法的「道理、地圖」：搞懂佛陀講了什麼、深淺有哪些。</span></div></div>
+        <div class="item"><span class="emo">🧘</span><div><b>觀</b><br><span>實際的「修行、走路」：照著地圖，真正去練習、去體會。</span></div></div>
+      </div>
+      <p class="lead">這趟旅程，我們會跟著佛陀說法的順序走一遍，
+      沿路收集 <b style="color:var(--gold)">智慧明珠 🔆</b>。準備好了嗎？</p>`,
+    btn:"開始旅程 →"
+  },
+
+  { /* 1 五時 */
+    type:"learn-quiz",
+    title:"第一關・五時",
+    tag:"佛陀說法的五個時期",
+    intro:`佛陀說法 49 年，不是一開始就講最難的。天台宗把它分成 <b>五個時期（五時）</b>，
+           就像太陽一天的光照，由淺入深：`,
+    learn:[
+      {emo:"⛰️", b:"① 華嚴時", s:"剛成道，先對大菩薩講最高的《華嚴經》。像日出先照高山。"},
+      {emo:"🌫️", b:"② 阿含時", s:"對初學者講基礎：四聖諦、因果。像陽光照進幽谷。"},
+      {emo:"🌅", b:"③ 方等時", s:"鼓勵大家發大心，讚歎大乘、破除執著。"},
+      {emo:"🌤️", b:"④ 般若時", s:"專講「空」的智慧，洗去執著。"},
+      {emo:"🌞", b:"⑤ 法華涅槃時", s:"最後會歸一乘：人人都能成佛！像日正當中。"},
+    ],
+    questions:[
+      { q:"佛陀剛成道時，最先說的是哪一部經？",
+        opts:["《阿含經》（基礎入門）","《華嚴經》（最高的法）","《般若經》（講空）"],
+        ans:1,
+        why:"佛成道後先講最高的《華嚴經》——就像日出先照最高的山頂，這就是「華嚴時」。"},
+      { q:"如果用太陽來比喻，「日正當中、最圓滿」對應哪一時？",
+        opts:["華嚴時","阿含時","法華涅槃時"],
+        ans:2,
+        why:"《法華經》開示「人人皆可成佛」，是最圓滿的會歸，所以比喻為日正當中的「法華涅槃時」。"},
+    ]
+  },
+
+  { /* 2 化法四教 */
+    type:"learn-quiz",
+    title:"第二關・化法四教",
+    tag:"教法內容的四種深淺：藏・通・別・圓",
+    intro:`同樣是佛法，深淺不同。天台把「教的<b>內容</b>」分成四個層次，
+           像學習的四個年級，一個比一個圓滿：`,
+    learn:[
+      {emo:"🌱", b:"藏教（基礎班）", s:"小乘。用「分析」的方式了解空——把東西一一拆解，才知道沒有真實的我。"},
+      {emo:"🌿", b:"通教（入門大乘）", s:"大乘的門口。不用拆解，直接體會「當下就是空」。"},
+      {emo:"🌳", b:"別教（菩薩專班）", s:"專為菩薩。一步一步、按次第修，分別修「空、假、中」。"},
+      {emo:"🌟", b:"圓教（圓滿究竟）", s:"最高。一念之中同時「即空、即假、即中」，當下就圓滿。"},
+    ],
+    questions:[
+      { q:"「藏、通、別、圓」四教中，哪一個最圓滿究竟？",
+        opts:["藏教","別教","圓教"],
+        ans:2,
+        why:"「圓」就是圓滿融通。圓教主張一念心當下即空即假即中，是四教中最高的。"},
+      { q:"用「分析、拆解」的方法去體會空，是哪一教的特色？",
+        opts:["藏教","圓教","通教"],
+        ans:0,
+        why:"藏教（小乘）是「析空觀」——把事物分析拆解，才明白其中沒有真實不變的我。"},
+    ]
+  },
+
+  { /* 3 化儀四教 */
+    type:"learn-quiz",
+    title:"第三關・化儀四教",
+    tag:"教學方式的四種：頓・漸・秘密・不定",
+    intro:`上一關是「教<b>什麼內容</b>」；這一關是佛「<b>怎麼教</b>」的四種方式。
+           可以想成老師上課的不同教法：`,
+    learn:[
+      {emo:"⚡", b:"頓", s:"一次到位，直接講最深的（如對大菩薩說《華嚴》）。"},
+      {emo:"📶", b:"漸", s:"循序漸進，由淺入深（阿含→方等→般若）。"},
+      {emo:"🤫", b:"秘密", s:"同一堂課，每人領受不同，而且彼此不知道。"},
+      {emo:"🔀", b:"不定", s:"同一堂課，各有領受，但彼此知道、互相清楚。"},
+    ],
+    questions:[
+      { q:"「由淺入深、循序漸進」的教學方式是哪一種？",
+        opts:["頓","漸","秘密"],
+        ans:1,
+        why:"「漸」就是漸次。佛陀從基礎的阿含，慢慢帶到方等、般若，就是漸教。"},
+      { q:"關於「化儀」和「化法」，下列哪句正確？",
+        opts:["化儀＝教的內容深淺；化法＝教的方式","化儀＝教的方式；化法＝教的內容深淺","兩個是一樣的意思"],
+        ans:1,
+        why:"化『儀』是說法的方式（頓漸秘密不定）；化『法』是內容的深淺（藏通別圓）。一個是「怎麼教」，一個是「教什麼」。"},
+    ]
+  },
+
+  { /* 4 教觀並重 */
+    type:"learn-quiz",
+    title:"第四關・教觀並重",
+    tag:"全書最重要的一句話",
+    intro:`認識了「五時八教」這張地圖後，蕅益大師最想提醒我們的是：
+           地圖再清楚，也要真的走出去。`,
+    quoteHtml:`「有教無觀則<b>罔</b>，有觀無教則<b>殆</b>。」`,
+    learn:[
+      {emo:"📖", b:"有教無觀則罔", s:"只懂道理卻不修行 → 空談、迷罔，得不到真實受用。"},
+      {emo:"🧭", b:"有觀無教則殆", s:"只埋頭修卻沒有正見 → 容易走偏、危險。"},
+      {emo:"⚖️", b:"所以要並重", s:"「教」是地圖，「觀」是走路。兩者缺一不可，這就是《教觀綱宗》的核心。"},
+    ],
+    questions:[
+      { q:"蕅益大師為什麼強調「教」和「觀」要一起？",
+        opts:[
+          "因為理論（教）和實修（觀）缺一不可，只偏一邊都會出問題",
+          "因為教比較重要，觀只是附屬",
+          "因為觀比較重要，教可以省略"],
+        ans:0,
+        why:"正是如此。只有理論會流於空談（罔），只有盲修會走偏（殆）——解行並重，才是修行的正道。"},
+    ]
+  },
+];
+
+/* ====== 流程控制 ====== */
+const app = document.getElementById("app");
+const progressEl = document.getElementById("progress");
+const beadsEl = document.getElementById("beads");
+let stageIdx = 0;
+let beads = 0;
+
+function renderProgress(){
+  progressEl.innerHTML = "";
+  // 序章 + 4關 + 反思 = 6 點
+  const total = STAGES.length + 1;
+  for(let i=0;i<total;i++){
+    const d=document.createElement("div");
+    d.className="dot"+(i===stageIdx?" active":"")+(i<stageIdx?" done":"");
+    progressEl.appendChild(d);
+  }
+  beadsEl.textContent = beads>0 ? "🔆 智慧明珠 × "+beads : "";
+}
+
+function next(){ stageIdx++; route(); }
+
+function route(){
+  renderProgress();
+  if(stageIdx < STAGES.length){
+    const s = STAGES[stageIdx];
+    if(s.type==="intro") renderIntro(s);
+    else renderStage(s);
+  } else {
+    renderReflection();
+  }
+  window.scrollTo({top:0,behavior:"smooth"});
+}
+
+function renderIntro(s){
+  app.innerHTML = `
+    <div class="screen">
+      <span class="tag">${s.tag}</span>
+      <h2>${s.title}</h2>
+      ${s.html}
+      <div class="center"><button class="btn" id="go">${s.btn}</button></div>
+    </div>`;
+  document.getElementById("go").onclick = next;
+}
+
+function renderStage(s){
+  let learnHtml = (s.learn||[]).map(it=>`
+    <div class="item"><span class="emo">${it.emo}</span>
+      <div><b>${it.b}</b><br><span>${it.s}</span></div></div>`).join("");
+  app.innerHTML = `
+    <div class="screen">
+      <span class="tag">${s.tag}</span>
+      <h2>${s.title}</h2>
+      <p class="lead">${s.intro}</p>
+      ${s.quoteHtml?`<div class="quote">${s.quoteHtml}</div>`:""}
+      <div class="learn">${learnHtml}</div>
+      <div id="quizArea"></div>
+    </div>`;
+  runQuiz(s.questions, 0);
+}
+
+function runQuiz(questions, qi){
+  const area = document.getElementById("quizArea");
+  if(qi >= questions.length){
+    area.innerHTML += `<div class="center"><button class="btn" id="cont">繼續 →</button></div>`;
+    document.getElementById("cont").onclick = next;
+    return;
+  }
+  const q = questions[qi];
+  const block = document.createElement("div");
+  block.innerHTML = `
+    <div class="q">${qi+1}. ${q.q}</div>
+    <div class="opts">${q.opts.map((o,i)=>`<button class="opt" data-i="${i}">${o}</button>`).join("")}</div>
+    <div class="feedback" id="fb${qi}"></div>`;
+  area.appendChild(block);
+  const fb = block.querySelector("#fb"+qi);
+  const btns = block.querySelectorAll(".opt");
+  btns.forEach(b=>{
+    b.onclick = ()=>{
+      const i = +b.dataset.i;
+      btns.forEach(x=>x.disabled=true);
+      if(i===q.ans){
+        b.classList.add("correct");
+        beads++; renderProgress();
+        fb.className="feedback ok show";
+        fb.innerHTML = `✅ <b>答對了！</b> ${q.why}　<span style="color:var(--gold)">（+1 🔆）</span>`;
+      } else {
+        b.classList.add("wrong");
+        btns[q.ans].classList.add("correct");
+        fb.className="feedback no show";
+        fb.innerHTML = `💡 正確答案已標示。 ${q.why}`;
+      }
+      // 下一題按鈕
+      const nb=document.createElement("div");
+      nb.className="center";
+      nb.innerHTML=`<button class="btn ghost" style="margin-top:14px">${qi+1<questions.length?"下一題 →":"完成本關 →"}</button>`;
+      block.appendChild(nb);
+      nb.querySelector("button").onclick=()=>{ nb.remove(); runQuiz(questions, qi+1); };
+    };
+  });
+}
+
+function renderReflection(){
+  app.innerHTML = `
+    <div class="screen center">
+      <div class="big">🪷</div>
+      <h2>闖關完成！</h2>
+      <p class="lead">你收集了 <b style="color:var(--gold)">${beads} 顆智慧明珠 🔆</b>，
+      走完了《教觀綱宗》的入門地圖：<br>
+      <b style="color:var(--gold-soft)">五時</b> → <b style="color:var(--gold-soft)">化法四教（藏通別圓）</b>
+      → <b style="color:var(--gold-soft)">化儀四教（頓漸秘密不定）</b> → <b style="color:var(--gold-soft)">教觀並重</b>。</p>
+    </div>
+    <div class="screen reflect" style="margin-top:14px;">
+      <span class="tag">最後一站・反思與討論</span>
+      <h2>把學到的，變成你自己的</h2>
+      <p class="note">沒有標準答案。寫下你的想法，或跟同學、朋友一起討論 👇</p>
+
+      <label>1. 佛陀對不同的人，講不同深淺的法（五時八教）。這對你「跟不同的人溝通、教別人東西」有什麼啟發？</label>
+      <textarea placeholder="寫下你的想法…"></textarea>
+
+      <label>2. 「有教無觀則罔，有觀無教則殆。」在你的生活或學習中，有沒有「只懂道理卻沒做到」，或「只埋頭做卻沒方向」的經驗？</label>
+      <textarea placeholder="寫下你的經驗…"></textarea>
+
+      <label>3. 如果要用「一句話」向朋友介紹《教觀綱宗》，你會怎麼說？</label>
+      <textarea placeholder="我的一句話…"></textarea>
+
+      <div class="row" style="margin-top:18px;">
+        <button class="btn" id="copy">📋 複製我的反思</button>
+        <button class="btn ghost" id="again">↺ 再玩一次</button>
+      </div>
+      <p class="note" id="copied" style="min-height:1.2em;"></p>
+    </div>`;
+  document.getElementById("again").onclick=()=>{ stageIdx=0; beads=0; route(); };
+  document.getElementById("copy").onclick=()=>{
+    const tas=document.querySelectorAll(".reflect textarea");
+    const labels=document.querySelectorAll(".reflect label");
+    let out="《教觀綱宗・闖關之旅》我的反思\n\n";
+    tas.forEach((t,i)=>{ out+= labels[i].textContent.trim()+"\n→ "+(t.value.trim()||"（尚未填寫）")+"\n\n"; });
+    navigator.clipboard.writeText(out).then(()=>{
+      document.getElementById("copied").textContent="✅ 已複製，可以貼到聊天室或筆記跟大家分享！";
+    }).catch(()=>{
+      document.getElementById("copied").textContent="（無法自動複製，請手動選取文字）";
+    });
+  };
+}
+
+route();
+</script>
 </body>
 </html>
