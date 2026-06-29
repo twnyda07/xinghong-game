@@ -91,10 +91,12 @@ const INTRO = {
       <div class="item"><span class="emo">📖</span><div><b>教</b><br><span>佛法的道理與分類（解）：佛講了什麼、深淺如何。</span></div></div>
       <div class="item"><span class="emo">🧘</span><div><b>觀</b><br><span>實際的修行止觀（行）：照地圖真正去走、去體會。</span></div></div>
     </div>
-    <div class="quote">「有教無觀則罔，有觀無教則殆。」</div>
-    <p class="lead">這趟旅程共 <b style="color:var(--gold)">5 個等級、100 道題</b>，
-      <b style="color:var(--gold-soft)">由淺入深</b>，最後以十乘觀法與反思收尾。<br>
-      答對收集 <b style="color:var(--gold)">智慧明珠 🔆</b>，準備好了嗎？</p>`
+    <div class="quote">「佛祖之要，教觀而已矣。<br>觀非教不正，教非觀不傳。<br>有教無觀則罔，有觀無教則殆。」<br>
+      <span style="font-size:.82rem;color:var(--muted)">——《教觀綱宗》開卷語</span></div>
+    <p class="lead">題庫共 <b style="color:var(--gold)">5 級、100 題</b>，<b style="color:var(--gold-soft)">由淺入深</b>，
+      涵蓋五時、八教與十乘觀法。<br>
+      下一步可選 <b style="color:var(--gold-soft)">隨機抽考 10 題</b>（每次題目都不同）或 <b style="color:var(--gold-soft)">完整 100 題</b>。
+      答對收集 <b style="color:var(--gold)">智慧明珠 🔆</b>。</p>`
 };
 
 const LEVELS = [
@@ -276,22 +278,48 @@ const barEl=document.getElementById("bar");
 const beadsEl=document.getElementById("beads");
 const mLeft=document.getElementById("mLeft");
 const TOTAL_Q = LEVELS.reduce((n,l)=>n+l.qs.length,0); // 100
-let beads=0, answered=0;
-let phase="intro";   // intro | learn | quiz | levelend | reflect
-let li=0, qi=0;      // level / question index
+const RANDOM_PER_LEVEL = 2;   // 每級抽 2 題 → 共 10 題
 
-function setBar(){
-  barEl.style.width = (answered/TOTAL_Q*100)+"%";
-  beadsEl.textContent=beads;
+let mode=null;                // "full" | "random"
+let beads=0, answered=0, totalThis=0;
+let phase="intro";            // intro|mode|learn|quiz|levelend|rquiz|reflect
+let li=0, qi=0;               // 完整模式指標
+let testSet=[], ti=0;         // 隨機模式題組
+
+function shuffle(a){a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+function buildTest(){
+  // 每級隨機抽 RANDOM_PER_LEVEL 題，依等級順序串接 → 由淺到深；每級內隨機 → 每次都不同
+  testSet=[];
+  LEVELS.forEach((L,idx)=>{ shuffle(L.qs).slice(0,RANDOM_PER_LEVEL).forEach(q=>testSet.push({li:idx,q})); });
 }
+
+function setBar(){ barEl.style.width=(totalThis? answered/totalThis*100:0)+"%"; beadsEl.textContent=beads; }
 function scrollTop(){ window.scrollTo({top:0,behavior:"smooth"}); }
+
+function bindOptions(q, afterAnswer){
+  const fb=document.getElementById("fb");
+  const opts=[...document.querySelectorAll(".opt")];
+  opts.forEach(b=>b.onclick=()=>{
+    const i=+b.dataset.i; opts.forEach(x=>x.disabled=true); answered++;
+    if(i===q.a){ b.classList.add("correct"); beads++;
+      fb.className="feedback ok show";
+      fb.innerHTML=`✅ <b>答對！</b> ${q.w}　<span style="color:var(--gold)">+1 🔆</span>`;
+    } else { b.classList.add("wrong"); opts[q.a].classList.add("correct");
+      fb.className="feedback no show";
+      fb.innerHTML=`💡 正解已標示。 ${q.w}`;
+    }
+    setBar(); afterAnswer();
+  });
+}
 
 function render(){
   setBar();
   if(phase==="intro") return renderIntro();
+  if(phase==="mode") return renderMode();
   if(phase==="learn") return renderLearn();
   if(phase==="quiz")  return renderQuiz();
   if(phase==="levelend") return renderLevelEnd();
+  if(phase==="rquiz") return renderRQuiz();
   if(phase==="reflect") return renderReflect();
 }
 
@@ -299,8 +327,47 @@ function renderIntro(){
   mLeft.textContent="序章";
   app.innerHTML=`<div class="screen">
     <span class="tag">${INTRO.tag}</span><h2>${INTRO.title}</h2>${INTRO.html}
-    <div class="center"><button class="btn" id="go">開始第一級 →</button></div></div>`;
-  go.onclick=()=>{ phase="learn"; li=0; render(); };
+    <div class="center"><button class="btn" id="go">選擇模式 →</button></div></div>`;
+  go.onclick=()=>{ phase="mode"; render(); };
+}
+
+function renderMode(){
+  mLeft.textContent="選擇模式";
+  app.innerHTML=`<div class="screen">
+    <span class="tag">選擇模式</span><h2>你想怎麼玩？</h2>
+    <div class="learn">
+      <div class="item" id="m-random" style="cursor:pointer">
+        <span class="emo">🎲</span><div><b>隨機抽考 ・ 10 題</b><br>
+        <span>從五個等級各隨機抽 2 題，由淺到深排列，<b style="color:var(--gold-soft)">每次題目都不一樣</b>。適合快速複習、反覆練習。</span></div></div>
+      <div class="item" id="m-full" style="cursor:pointer">
+        <span class="emo">📚</span><div><b>完整學習 ・ 100 題</b><br>
+        <span>五級依序闖關，每級先看重點學習卡再答題。適合第一次完整學習。</span></div></div>
+    </div>
+    <p class="note">點選上方任一張卡片開始。</p>
+    <div class="center"><button class="btn ghost" id="back">← 回序章</button></div></div>`;
+  document.getElementById("m-random").onclick=startRandom;
+  document.getElementById("m-full").onclick=startFull;
+  document.getElementById("back").onclick=()=>{ phase="intro"; render(); };
+  scrollTop();
+}
+function startRandom(){ mode="random"; buildTest(); beads=0; answered=0; totalThis=testSet.length; ti=0; phase="rquiz"; render(); }
+function startFull(){ mode="full"; beads=0; answered=0; totalThis=TOTAL_Q; li=0; qi=0; phase="learn"; render(); }
+
+function renderRQuiz(){
+  const item=testSet[ti], L=LEVELS[item.li], q=item.q;
+  mLeft.textContent=`隨機抽考　第 ${ti+1}/${testSet.length} 題`;
+  app.innerHTML=`<div class="screen">
+    <span class="tag">LEVEL ${item.li+1}・${L.sub}</span>
+    <div class="q"><span class="qn">第 ${ti+1} 題.</span> ${q.q}</div>
+    <div class="opts" id="opts">${q.o.map((o,i)=>`<button class="opt" data-i="${i}">${o}</button>`).join("")}</div>
+    <div class="feedback" id="fb"></div>
+    <div class="center" id="navArea"></div></div>`;
+  bindOptions(q, ()=>{
+    const last = ti+1>=testSet.length;
+    document.getElementById("navArea").innerHTML=`<button class="btn" id="nx">${last?"看結果 →":"下一題 →"}</button>`;
+    nx.onclick=()=>{ if(last){ phase="reflect"; render(); } else { ti++; render(); } };
+  });
+  scrollTop();
 }
 
 function renderLearn(){
@@ -327,19 +394,7 @@ function renderQuiz(){
     <div class="opts" id="opts">${q.o.map((o,i)=>`<button class="opt" data-i="${i}">${o}</button>`).join("")}</div>
     <div class="feedback" id="fb"></div>
     <div class="center" id="navArea"></div></div>`;
-  const fb=document.getElementById("fb");
-  const opts=[...document.querySelectorAll(".opt")];
-  opts.forEach(b=>b.onclick=()=>{
-    const i=+b.dataset.i;
-    opts.forEach(x=>x.disabled=true);
-    answered++;
-    if(i===q.a){ b.classList.add("correct"); beads++; setBar();
-      fb.className="feedback ok show";
-      fb.innerHTML=`✅ <b>答對！</b> ${q.w}　<span style="color:var(--gold)">+1 🔆</span>`;
-    } else { b.classList.add("wrong"); opts[q.a].classList.add("correct");
-      fb.className="feedback no show";
-      fb.innerHTML=`💡 正解已標示。 ${q.w}`;
-    }
+  bindOptions(q, ()=>{
     const last = qi+1>=L.qs.length;
     document.getElementById("navArea").innerHTML=
       `<button class="btn" id="nx">${last?"完成本級 →":"下一題 →"}</button>`;
@@ -377,16 +432,17 @@ function renderLevelEnd(){
 
 function renderReflect(){
   mLeft.textContent="反思與討論";
-  const pct=Math.round(beads/TOTAL_Q*100);
-  let medal = beads>=90?"🥇 法海導師":beads>=70?"🥈 精進學人":beads>=50?"🥉 初心行者":"🌱 結緣新生";
+  const pct=Math.round(beads/totalThis*100);
+  const medal = pct>=90?"🥇 法海導師":pct>=70?"🥈 精進學人":pct>=50?"🥉 初心行者":"🌱 結緣新生";
+  const isRandom = mode==="random";
   const fields=REFLECT_QS.map(q=>`<label>${q}</label><textarea placeholder="寫下你的想法…"></textarea>`).join("");
   app.innerHTML=`<div class="screen center">
-      <div class="big">🪷</div><h2>闖關完成！</h2>
-      <p class="lead">你在 100 題中答對 <b style="color:var(--gold)">${beads} 題（${pct}%）</b>。</p>
+      <div class="big">🪷</div><h2>${isRandom?"抽考完成！":"闖關完成！"}</h2>
+      <p class="lead">你在 ${totalThis} 題中答對 <b style="color:var(--gold)">${beads} 題（${pct}%）</b>。</p>
       <div class="pill">${medal}</div>
-      <p class="lead" style="margin-top:12px;">走完地圖：
-        <b style="color:var(--gold-soft)">五時</b> → <b style="color:var(--gold-soft)">八教（藏通別圓・頓漸秘密不定）</b>
-        → <b style="color:var(--gold-soft)">四諦觀法位次</b> → <b style="color:var(--gold-soft)">十乘觀法</b>。</p>
+      <p class="lead" style="margin-top:12px;">${isRandom
+        ? "想換一批題目？點下方「再玩一次」會重新隨機抽 10 題——由淺到深、每次都不同。"
+        : `走完地圖：<b style="color:var(--gold-soft)">五時</b> → <b style="color:var(--gold-soft)">八教（藏通別圓・頓漸秘密不定）</b> → <b style="color:var(--gold-soft)">四諦觀法位次</b> → <b style="color:var(--gold-soft)">十乘觀法</b>。`}</p>
     </div>
     <div class="screen reflect" style="margin-top:14px;">
       <span class="tag">最後一站・反思與討論</span>
@@ -399,10 +455,10 @@ function renderReflect(){
       </div>
       <p class="note" id="copied" style="min-height:1.2em;"></p>
     </div>`;
-  document.getElementById("again").onclick=()=>{ beads=0; answered=0; li=0; qi=0; phase="intro"; render(); };
+  document.getElementById("again").onclick=()=>{ phase="mode"; render(); };
   document.getElementById("copy").onclick=()=>{
     const tas=[...document.querySelectorAll(".reflect textarea")];
-    let out=`《教觀綱宗・闖關之旅》我的反思（答對 ${beads}/100）\n\n`;
+    let out=`《教觀綱宗・闖關之旅》我的反思（答對 ${beads}/${totalThis}）\n\n`;
     REFLECT_QS.forEach((q,i)=>{ out+=q+"\n→ "+(tas[i].value.trim()||"（尚未填寫）")+"\n\n"; });
     navigator.clipboard.writeText(out).then(()=>{
       document.getElementById("copied").textContent="✅ 已複製，可貼到聊天室或筆記與大家分享！";
