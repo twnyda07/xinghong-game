@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>教觀綱宗・闖關之旅（100題）</title>
+<style>
+  :root{
+    --bg1:#1a1430; --bg2:#241a45; --gold:#e9c46a; --gold-soft:#f2dca0;
+    --ink:#f3eede; --muted:#b9b1d6; --good:#7bd389; --bad:#e98b8b;
+    --card:#2e2356; --card2:#372a66; --line:#4a3c7e;
+  }
+  *{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
+  body{margin:0; min-height:100vh; font-family:"Noto Sans TC","Microsoft JhengHei",system-ui,sans-serif;
+    color:var(--ink); background:radial-gradient(120% 100% at 50% 0%,var(--bg2),var(--bg1));
+    display:flex; justify-content:center; padding:16px;}
+  .wrap{width:100%; max-width:680px;}
+  header{text-align:center; margin:6px 0 12px;}
+  header h1{font-size:1.4rem; margin:.2em 0; letter-spacing:1.5px;}
+  header h1 .sub{color:var(--gold);}
+  .bar{height:8px; background:var(--line); border-radius:99px; overflow:hidden; margin:10px 0 6px;}
+  .bar > i{display:block; height:100%; width:0; background:linear-gradient(90deg,var(--gold-soft),var(--gold)); transition:.4s;}
+  .meta{display:flex; justify-content:space-between; color:var(--muted); font-size:.82rem;}
+  .meta b{color:var(--gold);}
+  .screen{background:linear-gradient(180deg,var(--card),var(--card2));
+    border:1px solid var(--line); border-radius:18px; padding:22px 20px;
+    box-shadow:0 14px 40px rgba(0,0,0,.35); animation:rise .35s ease;}
+  @keyframes rise{from{opacity:0; transform:translateY(14px);} to{opacity:1; transform:none;}}
+  h2{font-size:1.22rem; margin:.1em 0 .5em; color:var(--gold-soft);}
+  .lead{color:var(--muted); line-height:1.85; font-size:.97rem;}
+  .tag{display:inline-block; background:rgba(233,196,106,.16); color:var(--gold);
+    border:1px solid rgba(233,196,106,.35); padding:2px 10px; border-radius:999px; font-size:.78rem; margin-bottom:8px;}
+  .lvlbadge{font-size:.8rem; color:var(--gold); letter-spacing:2px;}
+  .learn{display:grid; gap:9px; margin:14px 0;}
+  .item{background:rgba(255,255,255,.04); border:1px solid var(--line); border-radius:12px; padding:11px 13px; display:flex; gap:11px; align-items:flex-start;}
+  .item .emo{font-size:1.4rem; line-height:1.4;}
+  .item b{color:var(--gold-soft);}
+  .item span{color:var(--muted); font-size:.9rem; line-height:1.65;}
+  .q{font-size:1.06rem; line-height:1.7; margin:6px 0 14px;}
+  .qn{color:var(--gold); font-weight:700;}
+  .opts{display:grid; gap:9px;}
+  .opt{text-align:left; background:rgba(255,255,255,.05); color:var(--ink); border:1.5px solid var(--line);
+    border-radius:12px; padding:12px 15px; font-size:1rem; cursor:pointer; transition:.15s; line-height:1.5;}
+  .opt:hover{border-color:var(--gold); background:rgba(233,196,106,.1);}
+  .opt.correct{border-color:var(--good); background:rgba(123,211,137,.18);}
+  .opt.wrong{border-color:var(--bad); background:rgba(233,139,139,.16);}
+  .opt:disabled{cursor:default;}
+  .feedback{margin:13px 0 2px; padding:11px 14px; border-radius:12px; line-height:1.7; font-size:.93rem; display:none;}
+  .feedback.show{display:block; animation:rise .25s ease;}
+  .feedback.ok{background:rgba(123,211,137,.12); border:1px solid var(--good);}
+  .feedback.no{background:rgba(233,139,139,.12); border:1px solid var(--bad);}
+  .feedback b{color:var(--gold-soft);}
+  .btn{display:inline-block; background:linear-gradient(180deg,var(--gold),#d8ad4e); color:#3a2a08; border:none;
+    border-radius:12px; padding:12px 26px; font-size:1.02rem; font-weight:700; cursor:pointer; margin-top:10px;
+    transition:.15s; box-shadow:0 6px 16px rgba(233,196,106,.25);}
+  .btn:hover{transform:translateY(-1px);}
+  .btn.ghost{background:transparent; color:var(--gold); border:1.5px solid var(--line); box-shadow:none;}
+  .center{text-align:center;}
+  .row{display:flex; gap:10px; flex-wrap:wrap; justify-content:center;}
+  .big{font-size:2.6rem; text-align:center; margin:6px 0;}
+  .quote{border-left:3px solid var(--gold); padding:6px 0 6px 14px; margin:14px 0; color:var(--gold-soft); line-height:1.9; font-size:1.04rem;}
+  .reflect label{display:block; color:var(--gold-soft); margin:16px 0 6px; line-height:1.7;}
+  .reflect textarea{width:100%; min-height:72px; resize:vertical; border-radius:12px; border:1.5px solid var(--line);
+    background:rgba(0,0,0,.18); color:var(--ink); padding:12px; font-size:1rem; font-family:inherit; line-height:1.6;}
+  .reflect textarea:focus{outline:none; border-color:var(--gold);}
+  .note{color:var(--muted); font-size:.85rem; line-height:1.7; margin-top:6px;}
+  footer{text-align:center; color:var(--muted); font-size:.76rem; margin:16px 0 6px; line-height:1.7;}
+  .pill{display:inline-block; background:rgba(0,0,0,.2); border:1px solid var(--line); border-radius:99px; padding:4px 12px; margin:4px; font-size:.85rem;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <a href="index.html" style="display:inline-block;color:var(--muted);text-decoration:none;font-size:.85rem;margin-bottom:6px;">← 回遊戲樂園</a>
+  <header>
+    <h1>教觀綱宗 <span class="sub">闖關之旅</span></h1>
+    <div class="bar"><i id="bar"></i></div>
+    <div class="meta"><span id="mLeft">序章</span><span id="mRight">🔆 <b id="beads">0</b></span></div>
+  </header>
+  <div id="app"></div>
+  <footer>依蕅益大師《教觀綱宗（科釋）》天台教義編寫 ・ 100 題由淺入深 ・ 含五時八教與十乘觀法</footer>
+</div>
+
+<script>
+/* ============ 學習與題庫資料（由淺入深五個等級，共100題） ============ */
+const INTRO = {
+  tag:"序章", title:"歡迎來到《教觀綱宗》",
+  html:`
+    <p class="lead"><b style="color:var(--gold-soft)">《教觀綱宗》</b>是明末
+      <b style="color:var(--gold-soft)">蕅益大師</b>所著、天台宗教義的綱要。
+      它把佛陀一生的教法整理成一張清楚的「地圖」，核心只有兩個字：</p>
+    <div class="learn">
+      <div class="item"><span class="emo">📖</span><div><b>教</b><br><span>佛法的道理與分類（解）：佛講了什麼、深淺如何。</span></div></div>
+      <div class="item"><span class="emo">🧘</span><div><b>觀</b><br><span>實際的修行止觀（行）：照地圖真正去走、去體會。</span></div></div>
+    </div>
+    <div class="quote">「佛祖之要，教觀而已矣。<br>觀非教不正，教非觀不傳。<br>有教無觀則罔，有觀無教則殆。」<br>
+      <span style="font-size:.82rem;color:var(--muted)">——《教觀綱宗》開卷語</span></div>
+    <p class="lead">題庫共 <b style="color:var(--gold)">5 級、100 題</b>，<b style="color:var(--gold-soft)">由淺入深</b>，
+      涵蓋五時、八教與十乘觀法。<br>
+      下一步可選 <b style="color:var(--gold-soft)">隨機抽考 10 題</b>（每次題目都不同）或 <b style="color:var(--gold-soft)">完整 100 題</b>。
+      答對收集 <b style="color:var(--gold)">智慧明珠 🔆</b>。</p>`
+};
+
+const LEVELS = [
+{
+  name:"第一級・入門", sub:"教、觀與基本精神",
+  learn:[
+    {emo:"✍️",b:"蕅益大師",s:"明末四大高僧之一，《教觀綱宗》作者，整理天台宗教義。"},
+    {emo:"📖",b:"教＝地圖",s:"佛法的道理與分類，讓你看懂法的全貌與深淺。"},
+    {emo:"🧘",b:"觀＝走路",s:"實際的止觀修行，照著地圖真正去修。"},
+    {emo:"⚖️",b:"教觀並重",s:"只懂理論會空談（罔），只盲修會走偏（殆）——兩者缺一不可。"},
+  ],
+  qs:[
+    {q:"《教觀綱宗》的作者是誰？",o:["蕅益大師（智旭）","唐朝玄奘","禪宗六祖惠能"],a:0,w:"蕅益大師（智旭），明末四大高僧之一。"},
+    {q:"《教觀綱宗》主要整理哪一宗的教義？",o:["禪宗","天台宗","淨土宗"],a:1,w:"它是天台宗的教義綱要。"},
+    {q:"書名中的「教」，主要指什麼？",o:["佛法的道理與分類（解）","打坐的姿勢","寺院的規矩"],a:0,w:"教＝對佛法的判別、理解，是「解」。"},
+    {q:"書名中的「觀」，主要指什麼？",o:["參觀寺院","實際的修行止觀（行）","看經書封面"],a:1,w:"觀＝實際的止觀修行，是「行」。"},
+    {q:"全書最強調「教」與「觀」的關係是？",o:["只要教就好","只要觀就好","兩者並重"],a:2,w:"教觀並重，是全書核心。"},
+    {q:"「有教無觀則罔」最接近哪個意思？",o:["只懂道理卻不修，空洞無實得","不必讀書","只要觀想"],a:0,w:"罔＝迷罔空洞；只有理論而不修，得不到真實受用。"},
+    {q:"「有觀無教則殆」最接近哪個意思？",o:["盲修瞎練沒正見，容易走偏危險","修行很安全","完全不用修"],a:0,w:"殆＝危險；只埋頭修而無正見，易入歧途。"},
+    {q:"「八教」是由哪兩組合成？",o:["化儀四教＋化法四教","大乘＋小乘","顯教＋密教"],a:0,w:"八教＝化儀四教（方式）＋化法四教（內容深淺）。"},
+    {q:"「五時」是指什麼？",o:["一天的五個時辰","佛陀說法的五個時期","五種供養"],a:1,w:"五時＝佛陀一代說法分成的五個時期。"},
+    {q:"佛陀為何對不同人講不同深淺的法？",o:["隨眾生根機而施教","佛忘記講過","沒有原因"],a:0,w:"應機說法——隨眾生根器深淺善巧施教。"},
+    {q:"用比喻來說，「教」像什麼、「觀」像什麼？",o:["教是地圖、觀是走路","教是食物、觀是衣服","兩者一樣"],a:0,w:"教指路（地圖），觀實走（走路）。"},
+    {q:"只會背誦名相、卻完全不修行，最像下列哪一種？",o:["有教無觀","有觀無教","教觀並重"],a:0,w:"有教（懂名相）無觀（不修）。"},
+    {q:"很精進打坐、卻毫無正知見，最像哪一種？",o:["有教無觀","有觀無教","完全沒修"],a:1,w:"有觀（勤修）無教（無正見）。"},
+    {q:"「綱宗」二字，提示這是一本怎樣的書？",o:["很厚的故事書","提綱挈領的教義綱要","咒語集"],a:1,w:"綱宗＝綱要、要旨，簡明扼要。"},
+    {q:"學「五時八教」對初學者最大的好處是？",o:["背很多名詞炫耀","建立佛法全局地圖、了解法的深淺次第","沒有用"],a:1,w:"先有地圖，後續學任何經論都能定位。"},
+    {q:"蕅益大師是哪個時代的人？",o:["唐朝","明末","春秋"],a:1,w:"明末（明清之際）。"},
+    {q:"下列何者最符合《教觀綱宗》的精神？",o:["解行並重","只解不行","只行不解"],a:0,w:"解（教）行（觀）並重。"},
+    {q:"佛陀一生說法，常說約幾年？",o:["49年","3年","500年"],a:0,w:"通常說佛陀說法約49年。"},
+  ]
+},
+{
+  name:"第二級・五時與五味", sub:"佛陀說法的五個時期",
+  learn:[
+    {emo:"⛰️",b:"① 華嚴時",s:"成道最初，為大菩薩說《華嚴經》。日出先照高山；五味中的『乳味』。"},
+    {emo:"🌫️",b:"② 阿含時（鹿苑）",s:"為小乘初機說四阿含、四聖諦。日照幽谷；『酪味』。"},
+    {emo:"🌅",b:"③ 方等時",s:"彈偏斥小、歎大褒圓，引小向大。『生酥味』。"},
+    {emo:"🌤️",b:"④ 般若時",s:"廣說諸部《般若》，淘汰會通、明空。『熟酥味』。"},
+    {emo:"🌞",b:"⑤ 法華涅槃時",s:"開權顯實、會三歸一，人人皆可成佛。日正當中；最上『醍醐味』。"},
+    {emo:"🔄",b:"通別五時",s:"別五時＝大致依時間先後；通五時＝不拘年月，隨根機隨時施。"},
+  ],
+  qs:[
+    {q:"五時的第一時是？",o:["阿含時","華嚴時","般若時"],a:1,w:"佛成道最初為大菩薩說《華嚴》，是華嚴時。"},
+    {q:"佛成道之初為大菩薩所說的經是？",o:["《華嚴經》","《阿含經》","《法華經》"],a:0,w:"華嚴時說《大方廣佛華嚴經》。"},
+    {q:"「鹿苑（鹿野苑）」所說、對象為小乘初機的是哪一時？",o:["華嚴時","阿含時","方等時"],a:1,w:"阿含時於鹿苑為小乘初機說四阿含。"},
+    {q:"方等時的特色是？",o:["只講戒律","彈偏斥小、歎大褒圓","只講神通"],a:1,w:"訶責小乘之偏、讚歎大乘，引小向大。"},
+    {q:"般若時主要闡明什麼？",o:["因果報應","空的智慧、淘汰會通","求生天界"],a:1,w:"廣說般若，明畢竟空、會通諸法。"},
+    {q:"法華涅槃時最重要的開示是？",o:["人人皆可成佛、會三歸一","只有少數人能成佛","世界末日"],a:0,w:"《法華》開權顯實、會三乘歸一佛乘。"},
+    {q:"五時的正確順序是？",o:["華嚴→阿含→方等→般若→法華涅槃","阿含→華嚴→般若→方等→法華","般若→阿含→華嚴→方等→法華"],a:0,w:"標準別五時次第。"},
+    {q:"太陽比喻中，「日出先照高山」對應？",o:["華嚴時","阿含時","法華時"],a:0,w:"先照高山＝先對上根大菩薩說華嚴。"},
+    {q:"「日照幽谷」比喻哪一時？",o:["華嚴","阿含","般若"],a:1,w:"光入幽谷＝為小乘初機說阿含。"},
+    {q:"「日正當中」比喻哪一時？",o:["華嚴","方等","法華涅槃"],a:2,w:"正午光明最盛＝最圓滿的法華涅槃時。"},
+    {q:"《涅槃經》以「五味」喻五時，第一味是？",o:["醍醐","乳","酪"],a:1,w:"乳味＝華嚴時。"},
+    {q:"五味中最殊勝的「醍醐味」配哪一時？",o:["華嚴","般若","法華涅槃"],a:2,w:"醍醐＝最上味，配法華涅槃。"},
+    {q:"五味順序乳→酪→生酥→熟酥→醍醐，「酪味」配？",o:["華嚴","阿含","方等"],a:1,w:"酪味＝阿含時。"},
+    {q:"「生酥味」配哪一時？",o:["方等","般若","法華"],a:0,w:"生酥＝方等時。"},
+    {q:"「熟酥味」配哪一時？",o:["方等","般若","華嚴"],a:1,w:"熟酥＝般若時。"},
+    {q:"「通五時」的意思是？",o:["固定的年月","不拘年月、隨根機隨時施教","只有五天"],a:1,w:"通五時破除死執年月，應機而說。"},
+    {q:"「別五時」的意思是？",o:["大致依時間先後的判教","完全沒有次序","五個地點"],a:0,w:"別五時依大致時序判別五期。"},
+    {q:"法華「會三歸一」的「三」指？",o:["三毒","聲聞、緣覺、菩薩三乘","佛法僧三寶"],a:1,w:"會三乘之權，歸一佛乘之實。"},
+    {q:"方等時「彈偏斥小」的用意是？",o:["責其滯小、激勵迴小向大","批評大乘","單純責罵"],a:0,w:"令小乘人不安於小果，回心向大。"},
+  ]
+},
+{
+  name:"第三級・八教架構", sub:"化儀四教 × 化法四教",
+  learn:[
+    {emo:"🛠️",b:"化儀四教＝怎麼教",s:"說法的『方式』：頓、漸、秘密、不定。"},
+    {emo:"📚",b:"化法四教＝教什麼",s:"教法『內容』的深淺：藏、通、別、圓（由淺到深）。"},
+    {emo:"⚡",b:"頓 / 漸",s:"頓＝一次直說圓頓大法（華嚴）；漸＝由淺入深（阿含→方等→般若）。"},
+    {emo:"🤫",b:"秘密 / 不定",s:"秘密＝各受不同且互不相知；不定＝各受不同但彼此知道。"},
+    {emo:"🧭",b:"化儀各有觀法",s:"頓→圓頓止觀、漸→漸次止觀、不定→不定止觀；秘密互不相知故無觀法可傳。"},
+  ],
+  qs:[
+    {q:"「化儀四教」指佛說法的什麼？",o:["內容深淺","方式形式","說法地點"],a:1,w:"化儀＝教化的『儀式方式』。"},
+    {q:"「化法四教」指什麼？",o:["說法方式","教法內容的深淺","說法時間"],a:1,w:"化法＝教化的『法義內容』深淺。"},
+    {q:"化儀四教是哪四個？",o:["藏通別圓","頓漸秘密不定","空假中真"],a:1,w:"頓、漸、秘密、不定。"},
+    {q:"化法四教是哪四個？",o:["頓漸秘密不定","藏通別圓","戒定慧解"],a:1,w:"藏、通、別、圓。"},
+    {q:"「頓教」的特色是？",o:["一開始就直說最深的圓頓大法","慢慢由淺入深","只私下傳"],a:0,w:"頓＝直入，如華嚴。"},
+    {q:"「漸教」的特色是？",o:["由淺入深、次第引導","一次到位","沒有次序"],a:0,w:"漸＝循序而進。"},
+    {q:"「秘密教」的特色是？",o:["同會各受不同、且彼此不知","完全公開","只對一人講"],a:0,w:"秘而不知，互不相曉。"},
+    {q:"「不定教」的特色是？",o:["同聞而領受不同，但彼此知道","毫無內容","固定不變"],a:0,w:"顯露不定，彼此互知。"},
+    {q:"「漸初、漸中、漸末」分別對應？",o:["阿含、方等、般若","華嚴、阿含、法華","方等、般若、涅槃"],a:0,w:"漸教三階＝阿含（初）、方等（中）、般若（末）。"},
+    {q:"化儀四教中，哪一教『沒有觀法可傳』？",o:["頓","漸","秘密"],a:2,w:"秘密互不相知，無法傳授其觀法。"},
+    {q:"化儀觀法對應三種止觀，「頓」對應？",o:["圓頓止觀","漸次止觀","不定止觀"],a:0,w:"頓教→圓頓止觀。"},
+    {q:"「漸」對應的止觀是？",o:["圓頓止觀","漸次止觀","不定止觀"],a:1,w:"漸教→漸次止觀。"},
+    {q:"「不定」對應的止觀是？",o:["圓頓止觀","漸次止觀","不定止觀"],a:2,w:"不定教→不定止觀。"},
+    {q:"藏、通、別、圓由淺到深的排序是？",o:["藏→通→別→圓","圓→別→通→藏","通→藏→圓→別"],a:0,w:"四教深淺次第。"},
+    {q:"「藏教」的「藏」是指？",o:["寶藏","經律論三藏（指小乘三藏教）","收藏"],a:1,w:"三藏教，即小乘。"},
+    {q:"「通教」為何稱『通』？",o:["通前藏教、通後別圓","交通往來","樣樣都通"],a:0,w:"前通小、後通大，居中銜接。"},
+    {q:"「別教」為何稱『別』？",o:["獨被菩薩、不共二乘，且次第隔別","分別計較","特別出色"],a:0,w:"別異二乘、三諦隔歷。"},
+    {q:"「圓教」為何稱『圓』？",o:["圓融無礙、即空即假即中","形狀圓","圓滿結束"],a:0,w:"圓融三諦、不縱不橫。"},
+  ]
+},
+{
+  name:"第四級・四教深入", sub:"四諦・觀法・三諦・六即・位次",
+  learn:[
+    {emo:"🍃",b:"四教四諦",s:"藏＝生滅四諦、通＝無生四諦、別＝無量四諦、圓＝無作四諦（一層比一層圓）。"},
+    {emo:"🔍",b:"四教觀法",s:"藏＝析空觀、通＝體空觀、別＝次第三觀、圓＝一心三觀。"},
+    {emo:"☯️",b:"三諦",s:"空、假、中。別教『隔歷三諦』（次第）、圓教『圓融三諦』（一即三）。"},
+    {emo:"🪜",b:"六即",s:"理即→名字即→觀行即→相似即→分證即→究竟即；用以『知位次』而不增上慢。"},
+    {emo:"🏅",b:"位次概覽",s:"藏：四果阿羅漢；通：十地（乾慧…佛地）；別：五十二位；圓：圓伏圓斷、配六即。"},
+  ],
+  qs:[
+    {q:"藏教所觀的四諦是？",o:["生滅四諦","無作四諦","無量四諦"],a:0,w:"藏教＝生滅四諦。"},
+    {q:"圓教所觀的四諦是？",o:["生滅四諦","無生四諦","無作四諦"],a:2,w:"圓教＝無作四諦。"},
+    {q:"通教的四諦是？",o:["無生四諦","生滅四諦","無量四諦"],a:0,w:"通教＝無生四諦。"},
+    {q:"別教的四諦是？",o:["無作四諦","無量四諦","生滅四諦"],a:1,w:"別教＝無量四諦。"},
+    {q:"藏教斷惑所用的觀法是？",o:["析空觀（分析法相而入空）","一心三觀","中道觀"],a:0,w:"析法明空，故稱析空觀。"},
+    {q:"通教的觀法是？",o:["析空觀","體空觀（當體即空）","次第三觀"],a:1,w:"體法即空，不待分析。"},
+    {q:"別教修三觀的方式是？",o:["一心同時","次第（先空、次假、後中）","完全不修"],a:1,w:"歷別次第而修，故隔歷。"},
+    {q:"圓教的觀法是？",o:["次第三觀","一心三觀（即空即假即中）","析空觀"],a:1,w:"一心中圓觀三諦。"},
+    {q:"「三諦」是指哪三者？",o:["空、假、中","戒、定、慧","佛、法、僧"],a:0,w:"空諦、假諦、中諦。"},
+    {q:"別教的「隔歷三諦」意思是？",o:["空假中分開、次第而修","三諦圓融一體","沒有三諦"],a:0,w:"三諦隔別、不相即。"},
+    {q:"圓教三諦的特色是？",o:["隔歷不融","圓融（一即三、三即一）","只談空"],a:1,w:"即空即假即中，圓融無礙。"},
+    {q:"「六即」的第一位是？",o:["究竟即","理即","分證即"],a:1,w:"理即→名字即→觀行即→相似即→分證即→究竟即。"},
+    {q:"「名字即」指的是？",o:["聽聞佛法、知道名相義理","已經成佛","尚未聞法"],a:0,w:"於名字中通達、解了。"},
+    {q:"「究竟即」指的是？",o:["初發心","圓滿成佛","只在聽聞階段"],a:1,w:"究竟即佛＝果位圓滿。"},
+    {q:"設立「六即」最重要的用意是？",o:["知位次，不生增上慢也不退屈","純粹排名比高下","標示座位"],a:0,w:"理體雖即佛，事修有淺深——免得未證謂證。"},
+    {q:"藏教聲聞最高證得什麼果？",o:["阿羅漢果","佛果","等覺"],a:0,w:"聲聞極果＝阿羅漢。"},
+    {q:"藏教中，緣覺主要修什麼法？",o:["六度","十二因緣","四諦"],a:1,w:"緣覺觀十二因緣。（聲聞修四諦、菩薩修六度）"},
+    {q:"藏教菩薩主要修什麼？",o:["十二因緣","六度（三祇修福、百劫種相好）","只修四諦"],a:1,w:"藏教菩薩行六度，歷劫修因。"},
+    {q:"通教位次用『十地』，通教行人被別圓引接，稱為？",o:["被接","接力","連線"],a:0,w:"別接通、圓接通——根利者被接入別圓。"},
+    {q:"別教的位次（含等覺、妙覺）共有幾位？",o:["十位","五十二位","三位"],a:1,w:"十信、十住、十行、十迴向、十地、等覺、妙覺＝52。"},
+    {q:"圓教斷惑的特色是？",o:["一品一品次第斷","圓伏圓斷（一斷一切斷）","不能斷惑"],a:1,w:"圓人圓伏圓斷，不同別教之隔歷。"},
+    {q:"「即空即假即中」最能代表哪一教？",o:["藏教","通教","圓教"],a:2,w:"圓教一心三觀，三諦圓融。"},
+    {q:"藏教所證的涅槃是？",o:["偏真涅槃（灰身滅智）","無住涅槃","圓滿大般涅槃"],a:0,w:"析空證偏真，灰身泯智。"},
+    {q:"別教的中道屬「但中」，意思是？",o:["中道不具諸法、與空假隔歷","中道即具一切法","沒有中道"],a:0,w:"但中＝中道孤立、不即空假。"},
+    {q:"圓教的中道是「不但中」，意思是？",o:["中道即具足空假一切法","只剩中、別無一法","否定中道"],a:0,w:"不但中＝中道圓具諸法。"},
+    {q:"「一念三千」是哪一教（哪一家）的核心思想？",o:["藏教","圓教（天台圓頓）","通教"],a:1,w:"一念三千是天台圓教的標誌。"},
+    {q:"四教中，聲聞緣覺二乘也能『共學』的是？",o:["藏、通","別、圓","只有圓"],a:0,w:"藏通通二乘；別圓不共二乘、唯被菩薩。"},
+    {q:"「無作四諦」的『無作』最接近？",o:["造作不停","本自具足、當體即是、不假造作","什麼都不做"],a:1,w:"無作＝法爾天然、當下圓成。"},
+  ]
+},
+{
+  name:"第五級・十乘觀法", sub:"十法成乘 ── 駛向佛地的車",
+  learn:[
+    {emo:"🐂",b:"什麼是十乘觀法",s:"又名『十法成乘』：成就一輛能運載行者到佛地的『大白牛車（乘）』的十個要法。出《摩訶止觀》，圓教為正、通於四教。"},
+    {emo:"①",b:"觀不思議境",s:"最根本：觀一念心即三千、即空即假即中。"},
+    {emo:"②③",b:"發真正菩提心・善巧安心",s:"②起上求下化的真菩提心；③善巧以止觀安住其心於法界。"},
+    {emo:"④⑤",b:"破法遍・識通塞",s:"④以三觀普破見思/塵沙/無明三惑；⑤辨別順道（通）與障道（塞）。"},
+    {emo:"⑥⑦",b:"道品調適・對治助開",s:"⑥調適三十七道品；⑦以六度等事修對治遮障、助開正觀。"},
+    {emo:"⑧⑨⑩",b:"知位次・能安忍・離法愛",s:"⑧知修證位次不增上慢；⑨安忍內外順逆障難；⑩離相似法愛，入分真位。"},
+    {emo:"🎯",b:"三根成乘",s:"上根：唯第一『觀不思議境』即成乘；中根：再用②至⑦；下根：須具足十法。"},
+  ],
+  qs:[
+    {q:"「十乘觀法」又稱作什麼？",o:["十法成乘","十二因緣","十善業道"],a:0,w:"十法和合而能成『乘』，故名十法成乘。"},
+    {q:"「成乘」的『乘』比喻什麼？",o:["乘法運算","能運載行者到佛地的車乘","剩餘"],a:1,w:"乘＝車；十法成就此車，載人入佛地。"},
+    {q:"十乘觀法中，最根本、居首的是哪一法？",o:["離法愛","觀不思議境","能安忍"],a:1,w:"第一『觀不思議境』是正修的核心。"},
+    {q:"「觀不思議境」主要觀什麼？",o:["觀一念心即三千、即空即假即中","觀外境風景","觀別人過失"],a:0,w:"以一念心為境，圓觀三諦。"},
+    {q:"十法中，發起『上求佛道、下化眾生』的是哪一法？",o:["真正發菩提心","破法遍","知位次"],a:0,w:"第二『真正發菩提心』。"},
+    {q:"「善巧安心」是指？",o:["隨便放空","善巧地以止觀安住此心於法界","睡覺休息"],a:1,w:"以止觀善巧安心，不浮不沈。"},
+    {q:"「破法遍」的意思是？",o:["破壞佛法","以三觀普遍破除三惑","把經書讀遍"],a:1,w:"遍破見思、塵沙、無明。"},
+    {q:"「識通塞」是辨識什麼？",o:["認得回家的路","何者順道（通）、何者障道（塞）","交通號誌"],a:1,w:"於修途中辨通塞、節節檢校。"},
+    {q:"「道品調適」調適的是？",o:["三十七道品，依根機善巧運用","三餐飲食","作息時間"],a:0,w:"調適三十七道品助成正觀。"},
+    {q:"「對治助開」是指？",o:["用六度等事相法門對治遮障、助開正觀","看醫生治病","把門打開"],a:0,w:"以事修對治障道、助開圓解。"},
+    {q:"「知位次」的作用是？",o:["知道自己修證的位次，免未證謂證的增上慢","比賽排名","記住座位號"],a:0,w:"明六即、知次位，謙而不慢。"},
+    {q:"「能安忍」要安忍什麼？",o:["內外順逆的障難，不為違順境動搖","忍住不吃飯","忍住不睡覺"],a:0,w:"安忍強軟二賊（順逆境）。"},
+    {q:"「離法愛」是指離開什麼？",o:["離開一切佛法","不貪著相似位的中道法愛，才能入分真","厭離學法"],a:1,w:"離相似法愛（頂墮），方登分證。"},
+    {q:"依根機，「上根」修十乘觀法只需？",o:["具足全部十法","僅第一『觀不思議境』即可成乘","前七法"],a:1,w:"上根利智，一法即足。"},
+    {q:"「下根」行人通常需要怎麼修？",o:["只用一法","具足十法、輾轉修習","完全不用觀"],a:1,w:"下根須備十法，節節扶持。"},
+    {q:"十乘觀法主要出自天台哪部論、以哪一教為正？",o:["《摩訶止觀》，圓教為正（通於四教）","《阿含經》，藏教","《壇經》，禪宗"],a:0,w:"智者大師《摩訶止觀》，圓教正用、四教通用。"},
+    {q:"十乘觀法的整體精神，最能呼應全書哪一主旨？",o:["教觀並重——有了教（地圖），更要以十乘實際修觀（走路）","只要讀經就好","只要拜佛就好"],a:0,w:"十乘觀法正是『觀』的具體下手處，與『教』相輔相成。"},
+  ]
+}
+];
+
+/* ============ 反思 ============ */
+const REFLECT_QS = [
+  "1. 佛陀對不同的人講不同深淺的法（五時八教）。這對你「跟不同的人溝通、教別人東西」有什麼啟發？",
+  "2. 「有教無觀則罔，有觀無教則殆。」你的生活或學習中，有沒有『只懂道理卻沒做到』，或『只埋頭做卻沒方向』的經驗？",
+  "3. 十乘觀法以『觀不思議境』為首。試著用自己的話說：你覺得『觀照當下這一念心』對日常生活可能有什麼幫助？",
+  "4. 如果要用『一句話』向朋友介紹《教觀綱宗》，你會怎麼說？"
+];
+
+/* ============ 引擎 ============ */
+const app=document.getElementById("app");
+const barEl=document.getElementById("bar");
+const beadsEl=document.getElementById("beads");
+const mLeft=document.getElementById("mLeft");
+const TOTAL_Q = LEVELS.reduce((n,l)=>n+l.qs.length,0); // 100
+const RANDOM_PER_LEVEL = 2;   // 每級抽 2 題 → 共 10 題
+
+let mode=null;                // "full" | "random"
+let beads=0, answered=0, totalThis=0;
+let phase="intro";            // intro|mode|learn|quiz|levelend|rquiz|reflect
+let li=0, qi=0;               // 完整模式指標
+let testSet=[], ti=0;         // 隨機模式題組
+
+function shuffle(a){a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+function buildTest(){
+  // 每級隨機抽 RANDOM_PER_LEVEL 題，依等級順序串接 → 由淺到深；每級內隨機 → 每次都不同
+  testSet=[];
+  LEVELS.forEach((L,idx)=>{ shuffle(L.qs).slice(0,RANDOM_PER_LEVEL).forEach(q=>testSet.push({li:idx,q})); });
+}
+
+function setBar(){ barEl.style.width=(totalThis? answered/totalThis*100:0)+"%"; beadsEl.textContent=beads; }
+function scrollTop(){ window.scrollTo({top:0,behavior:"smooth"}); }
+
+function bindOptions(q, afterAnswer){
+  const fb=document.getElementById("fb");
+  const opts=[...document.querySelectorAll(".opt")];
+  opts.forEach(b=>b.onclick=()=>{
+    const i=+b.dataset.i; opts.forEach(x=>x.disabled=true); answered++;
+    if(i===q.a){ b.classList.add("correct"); beads++;
+      fb.className="feedback ok show";
+      fb.innerHTML=`✅ <b>答對！</b> ${q.w}　<span style="color:var(--gold)">+1 🔆</span>`;
+    } else { b.classList.add("wrong"); opts[q.a].classList.add("correct");
+      fb.className="feedback no show";
+      fb.innerHTML=`💡 正解已標示。 ${q.w}`;
+    }
+    setBar(); afterAnswer();
+  });
+}
+
+function render(){
+  setBar();
+  if(phase==="intro") return renderIntro();
+  if(phase==="mode") return renderMode();
+  if(phase==="learn") return renderLearn();
+  if(phase==="quiz")  return renderQuiz();
+  if(phase==="levelend") return renderLevelEnd();
+  if(phase==="rquiz") return renderRQuiz();
+  if(phase==="reflect") return renderReflect();
+}
+
+function renderIntro(){
+  mLeft.textContent="序章";
+  app.innerHTML=`<div class="screen">
+    <span class="tag">${INTRO.tag}</span><h2>${INTRO.title}</h2>${INTRO.html}
+    <div class="center"><button class="btn" id="go">選擇模式 →</button></div></div>`;
+  go.onclick=()=>{ phase="mode"; render(); };
+}
+
+function renderMode(){
+  mLeft.textContent="選擇模式";
+  app.innerHTML=`<div class="screen">
+    <span class="tag">選擇模式</span><h2>你想怎麼玩？</h2>
+    <div class="learn">
+      <div class="item" id="m-random" style="cursor:pointer">
+        <span class="emo">🎲</span><div><b>隨機抽考 ・ 10 題</b><br>
+        <span>從五個等級各隨機抽 2 題，由淺到深排列，<b style="color:var(--gold-soft)">每次題目都不一樣</b>。適合快速複習、反覆練習。</span></div></div>
+      <div class="item" id="m-full" style="cursor:pointer">
+        <span class="emo">📚</span><div><b>完整學習 ・ 100 題</b><br>
+        <span>五級依序闖關，每級先看重點學習卡再答題。適合第一次完整學習。</span></div></div>
+    </div>
+    <p class="note">點選上方任一張卡片開始。</p>
+    <div class="center"><button class="btn ghost" id="back">← 回序章</button></div></div>`;
+  document.getElementById("m-random").onclick=startRandom;
+  document.getElementById("m-full").onclick=startFull;
+  document.getElementById("back").onclick=()=>{ phase="intro"; render(); };
+  scrollTop();
+}
+function startRandom(){ mode="random"; buildTest(); beads=0; answered=0; totalThis=testSet.length; ti=0; phase="rquiz"; render(); }
+function startFull(){ mode="full"; beads=0; answered=0; totalThis=TOTAL_Q; li=0; qi=0; phase="learn"; render(); }
+
+function renderRQuiz(){
+  const item=testSet[ti], L=LEVELS[item.li], q=item.q;
+  mLeft.textContent=`隨機抽考　第 ${ti+1}/${testSet.length} 題`;
+  app.innerHTML=`<div class="screen">
+    <span class="tag">LEVEL ${item.li+1}・${L.sub}</span>
+    <div class="q"><span class="qn">第 ${ti+1} 題.</span> ${q.q}</div>
+    <div class="opts" id="opts">${q.o.map((o,i)=>`<button class="opt" data-i="${i}">${o}</button>`).join("")}</div>
+    <div class="feedback" id="fb"></div>
+    <div class="center" id="navArea"></div></div>`;
+  bindOptions(q, ()=>{
+    const last = ti+1>=testSet.length;
+    document.getElementById("navArea").innerHTML=`<button class="btn" id="nx">${last?"看結果 →":"下一題 →"}</button>`;
+    nx.onclick=()=>{ if(last){ phase="reflect"; render(); } else { ti++; render(); } };
+  });
+  scrollTop();
+}
+
+function renderLearn(){
+  const L=LEVELS[li];
+  mLeft.textContent=`${L.name}`;
+  const cards=L.learn.map(it=>`<div class="item"><span class="emo">${it.emo}</span>
+     <div><b>${it.b}</b><br><span>${it.s}</span></div></div>`).join("");
+  app.innerHTML=`<div class="screen">
+    <div class="lvlbadge">LEVEL ${li+1} / 5</div>
+    <h2>${L.name}</h2><span class="tag">${L.sub}</span>
+    <p class="lead">先認識重點，再開始闖關（本級 ${L.qs.length} 題）：</p>
+    <div class="learn">${cards}</div>
+    <div class="center"><button class="btn" id="start">開始闖關 →</button></div></div>`;
+  start.onclick=()=>{ phase="quiz"; qi=0; render(); };
+  scrollTop();
+}
+
+function renderQuiz(){
+  const L=LEVELS[li], q=L.qs[qi];
+  mLeft.textContent=`${L.name}　第 ${qi+1}/${L.qs.length} 題`;
+  app.innerHTML=`<div class="screen">
+    <span class="tag">LEVEL ${li+1}・${L.sub}</span>
+    <div class="q"><span class="qn">Q${globalQno()}.</span> ${q.q}</div>
+    <div class="opts" id="opts">${q.o.map((o,i)=>`<button class="opt" data-i="${i}">${o}</button>`).join("")}</div>
+    <div class="feedback" id="fb"></div>
+    <div class="center" id="navArea"></div></div>`;
+  bindOptions(q, ()=>{
+    const last = qi+1>=L.qs.length;
+    document.getElementById("navArea").innerHTML=
+      `<button class="btn" id="nx">${last?"完成本級 →":"下一題 →"}</button>`;
+    nx.onclick=()=>{
+      if(last){ phase="levelend"; render(); }
+      else { qi++; render(); }
+    };
+  });
+  scrollTop();
+}
+
+function globalQno(){
+  let n=0; for(let k=0;k<li;k++) n+=LEVELS[k].qs.length; return n+qi+1;
+}
+
+function renderLevelEnd(){
+  const L=LEVELS[li];
+  const last = li+1>=LEVELS.length;
+  mLeft.textContent=`${L.name}・過關`;
+  app.innerHTML=`<div class="screen center">
+    <div class="big">${last?"🏆":"🎉"}</div>
+    <h2>${L.name}　完成！</h2>
+    <p class="lead">目前已答 <b style="color:var(--gold)">${answered}/${TOTAL_Q}</b> 題，
+      累積智慧明珠 <b style="color:var(--gold)">${beads} 🔆</b>。</p>
+    ${last?`<p class="lead">五個等級全部走完，最後來反思與討論 👇</p>`:
+            `<p class="lead">繼續前往下一級，難度再升一點！</p>`}
+    <div class="center"><button class="btn" id="cont">${last?"前往反思 →":"進入下一級 →"}</button></div>
+  </div>`;
+  cont.onclick=()=>{
+    if(last){ phase="reflect"; render(); }
+    else { li++; phase="learn"; render(); }
+  };
+  scrollTop();
+}
+
+function renderReflect(){
+  mLeft.textContent="反思與討論";
+  const pct=Math.round(beads/totalThis*100);
+  const medal = pct>=90?"🥇 法海導師":pct>=70?"🥈 精進學人":pct>=50?"🥉 初心行者":"🌱 結緣新生";
+  const isRandom = mode==="random";
+  const fields=REFLECT_QS.map(q=>`<label>${q}</label><textarea placeholder="寫下你的想法…"></textarea>`).join("");
+  app.innerHTML=`<div class="screen center">
+      <div class="big">🪷</div><h2>${isRandom?"抽考完成！":"闖關完成！"}</h2>
+      <p class="lead">你在 ${totalThis} 題中答對 <b style="color:var(--gold)">${beads} 題（${pct}%）</b>。</p>
+      <div class="pill">${medal}</div>
+      <p class="lead" style="margin-top:12px;">${isRandom
+        ? "想換一批題目？點下方「再玩一次」會重新隨機抽 10 題——由淺到深、每次都不同。"
+        : `走完地圖：<b style="color:var(--gold-soft)">五時</b> → <b style="color:var(--gold-soft)">八教（藏通別圓・頓漸秘密不定）</b> → <b style="color:var(--gold-soft)">四諦觀法位次</b> → <b style="color:var(--gold-soft)">十乘觀法</b>。`}</p>
+    </div>
+    <div class="screen reflect" style="margin-top:14px;">
+      <span class="tag">最後一站・反思與討論</span>
+      <h2>把學到的，變成你自己的</h2>
+      <p class="note">沒有標準答案。寫下你的想法，或與同學、師長一起討論 👇</p>
+      ${fields}
+      <div class="row" style="margin-top:18px;">
+        <button class="btn" id="copy">📋 複製我的反思</button>
+        <button class="btn ghost" id="again">↺ 再玩一次</button>
+      </div>
+      <p class="note" id="copied" style="min-height:1.2em;"></p>
+    </div>`;
+  document.getElementById("again").onclick=()=>{ phase="mode"; render(); };
+  document.getElementById("copy").onclick=()=>{
+    const tas=[...document.querySelectorAll(".reflect textarea")];
+    let out=`《教觀綱宗・闖關之旅》我的反思（答對 ${beads}/${totalThis}）\n\n`;
+    REFLECT_QS.forEach((q,i)=>{ out+=q+"\n→ "+(tas[i].value.trim()||"（尚未填寫）")+"\n\n"; });
+    navigator.clipboard.writeText(out).then(()=>{
+      document.getElementById("copied").textContent="✅ 已複製，可貼到聊天室或筆記與大家分享！";
+    }).catch(()=>{ document.getElementById("copied").textContent="（無法自動複製，請手動選取）"; });
+  };
+  scrollTop();
+}
+
+render();
+</script>
+</body>
+</html>

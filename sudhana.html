@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>善財童子・五十三參之旅</title>
+<style>
+  :root{
+    --bg1:#10243a; --bg2:#163a52; --gold:#f0c64a; --gold-soft:#f7dd92;
+    --ink:#f1efe6; --muted:#a9c2d4; --good:#7bd389; --bad:#e98b8b;
+    --card:#1d3b56; --card2:#244764; --line:#37607f;
+  }
+  *{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
+  body{margin:0; min-height:100vh; font-family:"Noto Sans TC","Microsoft JhengHei",system-ui,sans-serif;
+    color:var(--ink); background:radial-gradient(130% 100% at 50% 0%,var(--bg2),var(--bg1));
+    display:flex; justify-content:center; padding:16px;}
+  .wrap{width:100%; max-width:680px;}
+  .home{display:inline-block; color:var(--muted); text-decoration:none; font-size:.85rem; margin-bottom:6px;}
+  .home:hover{color:var(--gold);}
+  header{text-align:center; margin:2px 0 12px;}
+  header h1{font-size:1.4rem; margin:.2em 0; letter-spacing:1.5px;}
+  header h1 .sub{color:var(--gold);}
+  .bar{height:8px; background:var(--line); border-radius:99px; overflow:hidden; margin:10px 0 6px;}
+  .bar > i{display:block; height:100%; width:0; background:linear-gradient(90deg,var(--gold-soft),var(--gold)); transition:.4s;}
+  .meta{display:flex; justify-content:space-between; color:var(--muted); font-size:.82rem;}
+  .meta b{color:var(--gold);}
+  /* 旅程地圖 */
+  .map{display:flex; flex-wrap:wrap; gap:6px; justify-content:center; margin:8px 0 2px;}
+  .node{width:14px; height:14px; border-radius:50%; background:var(--line); display:flex; align-items:center; justify-content:center; font-size:9px; color:#0c1c2c; transition:.3s;}
+  .node.done{background:var(--gold-soft);}
+  .node.active{background:var(--gold); transform:scale(1.35); box-shadow:0 0 10px var(--gold);}
+  .screen{background:linear-gradient(180deg,var(--card),var(--card2)); border:1px solid var(--line);
+    border-radius:18px; padding:22px 20px; box-shadow:0 14px 40px rgba(0,0,0,.4); animation:rise .35s ease;}
+  @keyframes rise{from{opacity:0; transform:translateY(14px);} to{opacity:1; transform:none;}}
+  h2{font-size:1.22rem; margin:.1em 0 .4em; color:var(--gold-soft);}
+  .lead{color:var(--muted); line-height:1.85; font-size:.97rem;}
+  .tag{display:inline-block; background:rgba(240,198,74,.16); color:var(--gold); border:1px solid rgba(240,198,74,.35);
+    padding:2px 10px; border-radius:999px; font-size:.78rem; margin-bottom:8px;}
+  .portrait{font-size:3.2rem; text-align:center; margin:4px 0;}
+  .who{text-align:center; color:var(--muted); font-size:.9rem; margin-top:-4px;}
+  .dharma{background:rgba(240,198,74,.08); border:1px solid rgba(240,198,74,.3); border-radius:12px; padding:12px 14px; margin:14px 0; line-height:1.8;}
+  .dharma .lbl{color:var(--gold); font-weight:700; font-size:.85rem;}
+  .insight{border-left:3px solid var(--gold); padding:4px 0 4px 14px; margin:12px 0; color:var(--gold-soft); line-height:1.8;}
+  .q{font-size:1.05rem; line-height:1.7; margin:12px 0;}
+  .opts{display:grid; gap:9px;}
+  .opt{text-align:left; background:rgba(255,255,255,.05); color:var(--ink); border:1.5px solid var(--line);
+    border-radius:12px; padding:12px 15px; font-size:1rem; cursor:pointer; transition:.15s; line-height:1.5;}
+  .opt:hover{border-color:var(--gold); background:rgba(240,198,74,.1);}
+  .opt.correct{border-color:var(--good); background:rgba(123,211,137,.18);}
+  .opt.wrong{border-color:var(--bad); background:rgba(233,139,139,.16);}
+  .opt:disabled{cursor:default;}
+  .feedback{margin:13px 0 2px; padding:11px 14px; border-radius:12px; line-height:1.7; font-size:.93rem; display:none;}
+  .feedback.show{display:block; animation:rise .25s ease;}
+  .feedback.ok{background:rgba(123,211,137,.12); border:1px solid var(--good);}
+  .feedback.no{background:rgba(233,139,139,.12); border:1px solid var(--bad);}
+  .feedback b{color:var(--gold-soft);}
+  .btn{display:inline-block; background:linear-gradient(180deg,var(--gold),#d8ad3e); color:#33260a; border:none;
+    border-radius:12px; padding:12px 26px; font-size:1.02rem; font-weight:700; cursor:pointer; margin-top:10px;
+    transition:.15s; box-shadow:0 6px 16px rgba(240,198,74,.25);}
+  .btn:hover{transform:translateY(-1px);}
+  .btn.ghost{background:transparent; color:var(--gold); border:1.5px solid var(--line); box-shadow:none;}
+  .center{text-align:center;}
+  .row{display:flex; gap:10px; flex-wrap:wrap; justify-content:center;}
+  .big{font-size:2.6rem; text-align:center; margin:6px 0;}
+  .pill{display:inline-block; background:rgba(0,0,0,.2); border:1px solid var(--line); border-radius:99px; padding:4px 12px; margin:4px; font-size:.85rem;}
+  .reflect label{display:block; color:var(--gold-soft); margin:16px 0 6px; line-height:1.7;}
+  .reflect textarea{width:100%; min-height:72px; resize:vertical; border-radius:12px; border:1.5px solid var(--line);
+    background:rgba(0,0,0,.2); color:var(--ink); padding:12px; font-size:1rem; font-family:inherit; line-height:1.6;}
+  .reflect textarea:focus{outline:none; border-color:var(--gold);}
+  .note{color:var(--muted); font-size:.85rem; line-height:1.7; margin-top:6px;}
+  footer{text-align:center; color:var(--muted); font-size:.76rem; margin:16px 0 6px; line-height:1.7;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <a class="home" href="index.html">← 回遊戲樂園</a>
+  <header>
+    <h1>善財童子 <span class="sub">五十三參之旅</span></h1>
+    <div class="map" id="map"></div>
+    <div class="bar"><i id="bar"></i></div>
+    <div class="meta"><span id="mLeft">啟程</span><span id="mRight">🔆 法門寶珠 <b id="beads">0</b></span></div>
+  </header>
+  <div id="app"></div>
+  <footer>取材自《華嚴經・入法界品》善財童子五十三參 ・ 精選代表善知識 ・ 佛學入門互動學習</footer>
+</div>
+
+<script>
+/* ====== 序章 ====== */
+const INTRO=`
+  <span class="tag">啟程</span>
+  <h2>一個少年，走遍天下尋師求法</h2>
+  <p class="lead"><b style="color:var(--gold-soft)">善財童子</b>是《華嚴經・入法界品》裡的主角。
+    他在<b style="color:var(--gold-soft)">文殊菩薩</b>的啟發下發起菩提心，立志成佛、利益眾生，
+    於是展開一場大旅行——一路<b style="color:var(--gold-soft)">參訪 53 位善知識</b>（老師），
+    向他們一一請法。</p>
+  <p class="lead">這些善知識什麼身分都有：比丘、國王、女子、航海者、神祇、佛母……
+    每一位都教他一個<b style="color:var(--gold)">解脫法門</b>。最後在
+    <b style="color:var(--gold-soft)">彌勒菩薩</b>與<b style="color:var(--gold-soft)">普賢菩薩</b>處圓滿。</p>
+  <p class="lead">這趟旅程，我們<b style="color:var(--gold)">精選 12 位代表善知識</b>同行，
+    每到一處認識他、聽他的法、收集一顆 <b style="color:var(--gold)">法門寶珠 🔆</b>。出發吧！</p>`;
+
+/* ====== 旅程站點（精選代表，含善財參訪的著名善知識） ====== */
+const STOPS=[
+  { emo:"🦁", name:"文殊菩薩", who:"智慧第一的大菩薩・旅程的起點（福城）",
+    dharma:"啟發善財<b>發菩提心</b>——立定『上求佛道、下化眾生』的大願，並指引他南行參學。",
+    insight:"一切修行的起點，是「發心」。先立下向善向道的願，路才走得遠。",
+    q:"善財童子展開五十三參，最初的動力是什麼？",
+    o:["在文殊菩薩啟發下『發菩提心』","為了賺錢","被人強迫"], a:0,
+    w:"文殊菩薩啟發他發起菩提心、立志求法利生——這是整趟旅程的起點。"},
+
+  { emo:"🧘", name:"德雲比丘", who:"第一參・在妙峰山上經行的老比丘",
+    dharma:"教善財<b>念佛法門</b>：憶念一切諸佛，心心與佛相應，得『普見諸佛』的光明。",
+    insight:"入道的第一步，是讓心常常與佛、與善法相應。",
+    q:"善財參訪的第一位善知識德雲比丘，教他什麼法門？",
+    o:["賺大錢的方法","念佛（憶念諸佛）法門","打仗的兵法"], a:1,
+    w:"德雲比丘教他念佛法門——憶念諸佛、與佛相應，是入道第一步。"},
+
+  { emo:"🌊", name:"海雲比丘", who:"在海門國觀大海十二年的比丘",
+    dharma:"教<b>普眼法門</b>：心量如大海般廣大，能容納、悟入無量的佛法。",
+    insight:"心量要像大海——願意廣納一切善法，智慧才會深廣。",
+    q:"海雲比丘以『大海』作比喻，主要提醒我們什麼？",
+    o:["要去海邊玩","心量要像大海一樣廣大","海水不能喝"], a:1,
+    w:"以大海喻廣大心量——能容納無量法門，智慧自然深廣。"},
+
+  { emo:"🔥", name:"勝熱婆羅門", who:"修苦行的婆羅門・要善財爬刀山、跳火坑",
+    dharma:"看似危險的考驗，其實是破除<b>我執與恐懼</b>的善巧方便。善財依教而行，反證得清涼解脫。",
+    insight:"善知識有時用你想不到的方式，幫你突破自己的執著與害怕。",
+    q:"勝熱婆羅門要善財跳入火坑，這段故事主要要表達什麼？",
+    o:["修行要傷害身體","善知識以方便法門助人破除執著與恐懼","婆羅門很壞"], a:1,
+    w:"那是破我執、破恐懼的方便示現；善財依教奉行，反得清涼解脫。"},
+
+  { emo:"👑", name:"無厭足王", who:"看似對罪犯施以酷刑的國王",
+    dharma:"那些刑罰其實是<b>『如幻』示現</b>——以幻化的威嚴警惕眾生止惡向善，王本身慈悲無傷害。",
+    insight:"別只看表相就評斷人；菩薩度眾，有種種看不懂的善巧方便。",
+    q:"無厭足王的『酷刑』其實是？",
+    o:["真的殺人","如幻的示現，為了教化眾生止惡","國王的興趣"], a:1,
+    w:"那是如幻方便，目的在警惕眾生止惡，並非真實傷害。提醒我們勿以表相論斷。"},
+
+  { emo:"🌸", name:"婆須蜜多女", who:"一位容貌端美的女子",
+    dharma:"以善巧引導沉迷情欲的人回頭，令他們離染得淨，名<b>離貪欲際解脫</b>。",
+    insight:"善知識不分身分、相貌——只要能令人離煩惱、向覺悟，就是你的老師。",
+    q:"婆須蜜多女這位善知識，最顛覆我們的哪個想法？",
+    o:["善知識一定長得莊嚴、身分高貴","女生不能學佛","美貌最重要"], a:0,
+    w:"她示現以善巧度脫貪欲眾生——說明善知識不拘身分相貌，能度眾即是善知識。"},
+
+  { emo:"⛵", name:"婆施羅船師", who:"熟知大海、安全渡人的航海船長",
+    dharma:"以<b>大悲心</b>辨明航道、avoid險難，安穩運載眾生渡過生死大海。",
+    insight:"修行像航海：要有智慧辨方向，也要有慈悲載眾生一起到彼岸。",
+    q:"船師婆施羅的法門，最像下列哪個比喻？",
+    o:["獨自一人上岸就好","以智慧與慈悲，載眾生渡生死大海","把船弄沉"], a:1,
+    w:"以大悲為舟、智慧為舵，安全運載眾生渡過生死大海到彼岸。"},
+
+  { emo:"🪷", name:"觀自在菩薩", who:"即觀世音菩薩・尋聲救苦的大悲菩薩",
+    dharma:"<b>大悲行解脫門</b>：聞眾生苦難之聲，即時應化、拔苦與樂，無剎不現身。",
+    insight:"慈悲是菩薩道的心臟——聽見苦難，就生起想幫忙的心。",
+    q:"觀自在（觀世音）菩薩所教的法門核心是？",
+    o:["大悲——聞聲救苦","神通比賽","累積財富"], a:0,
+    w:"觀音菩薩的法門是大悲行——尋聲救苦、應機現身。"},
+
+  { emo:"🌟", name:"主夜神", who:"守護夜晚、身放光明的天神（如婆珊婆演底主夜神）",
+    dharma:"以<b>光明破除眾生的黑暗</b>（無明），於漫漫長夜中守護、引導迷途的眾生。",
+    insight:"再深的黑暗，一盞智慧的燈就能照破。",
+    q:"主夜神『放光破暗』象徵的是？",
+    o:["怕黑要開燈","以智慧光明破除眾生的無明黑暗","晚上不能睡"], a:1,
+    w:"夜＝無明黑暗，光＝智慧；象徵以智慧破無明、照亮迷途眾生。"},
+
+  { emo:"👶", name:"善知眾藝童子", who:"通達一切世間技藝與字母的童子",
+    dharma:"唱誦字母（阿、羅、波……）即入般若波羅蜜門，名<b>善知眾藝</b>——一切學問技藝皆可通向智慧。",
+    insight:"世間的學問、技能、才藝，用對了心，都能成為通往覺悟的門。",
+    q:"善知眾藝童子帶來的啟發是？",
+    o:["只有打坐才算修行","世間一切學問技藝都能通向智慧","讀書沒有用"], a:1,
+    w:"他從字母、技藝入般若——說明一切世間學問都可以是覺悟之門。"},
+
+  { emo:"🗼", name:"彌勒菩薩", who:"未來佛・毗盧遮那莊嚴藏大樓閣的主人",
+    dharma:"彈指開樓閣，善財見<b>一座樓閣中含無量樓閣，重重無盡</b>——體會『一即一切、一切即一』的法界。",
+    insight:"整個法界在一念之中重重相含、廣大無礙，這就是華嚴的不可思議境界。",
+    q:"彌勒菩薩『彈指開樓閣』讓善財體會到什麼？",
+    o:["樓閣很值錢","一即一切、重重無盡的法界","蓋房子的技術"], a:1,
+    w:"一樓閣中含無量樓閣，重重無盡——體現華嚴『一即一切』的法界境界。"},
+
+  { emo:"🐘", name:"普賢菩薩", who:"大行普賢菩薩・旅程的圓滿終點",
+    dharma:"善財重見文殊後，最終於普賢菩薩處圓滿，受持<b>普賢十大願王</b>（禮敬諸佛、稱讚如來……普皆迴向）。",
+    insight:"把所有的學習化成『實際的大願大行』，迴向一切眾生——這就是五十三參的終極答案。",
+    q:"五十三參最後以普賢菩薩的『十大願』圓滿，這代表什麼？",
+    o:["旅行結束去睡覺","把所學化為大願大行、迴向眾生","領獎品"], a:1,
+    w:"普賢十大願把一切修學落實為廣大願行、迴向眾生——這是整趟參學的歸宿。"},
+];
+
+/* ====== 反思 ====== */
+const REFLECT_QS=[
+  "1. 善財參訪的善知識，有出家人、國王、女子、船長、神祇、甚至看似殘酷或不正經的人。這對你『要向誰學習、怎麼看待身邊的人』有什麼啟發？",
+  "2. 善財每到一處都『謙卑請法、依教奉行』。你最近有沒有想向某個人學習的事？你打算怎麼開口、怎麼去做？",
+  "3. 五十三參最後以『普賢十大願』圓滿。如果要你許一個『想為別人做的願』，你會許什麼？"
+];
+
+/* ====== 引擎 ====== */
+const app=document.getElementById("app");
+const barEl=document.getElementById("bar");
+const beadsEl=document.getElementById("beads");
+const mapEl=document.getElementById("map");
+const mLeft=document.getElementById("mLeft");
+const N=STOPS.length;
+let beads=0, idx=0, phase="intro";
+
+function drawMap(){
+  mapEl.innerHTML="";
+  for(let i=0;i<N;i++){
+    const d=document.createElement("div");
+    d.className="node"+(i<idx?" done":"")+(i===idx&&phase==="stop"?" active":"");
+    mapEl.appendChild(d);
+  }
+}
+function setBar(){
+  const prog = phase==="reflect"? N : idx;
+  barEl.style.width=(prog/N*100)+"%"; beadsEl.textContent=beads; drawMap();
+}
+function scrollTop(){ window.scrollTo({top:0,behavior:"smooth"}); }
+
+function render(){
+  setBar();
+  if(phase==="intro") return renderIntro();
+  if(phase==="stop") return renderStop();
+  if(phase==="reflect") return renderReflect();
+}
+
+function renderIntro(){
+  mLeft.textContent="啟程";
+  app.innerHTML=`<div class="screen">${INTRO}
+    <div class="center"><button class="btn" id="go">出發參學 →</button></div></div>`;
+  go.onclick=()=>{ phase="stop"; idx=0; render(); };
+}
+
+function renderStop(){
+  const s=STOPS[idx];
+  mLeft.textContent=`第 ${idx+1} / ${N} 位善知識`;
+  app.innerHTML=`<div class="screen">
+    <span class="tag">第 ${idx+1} 站・共 ${N} 站（善財共參 53 位）</span>
+    <div class="portrait">${s.emo}</div>
+    <h2 style="text-align:center">${s.name}</h2>
+    <div class="who">${s.who}</div>
+    <div class="dharma"><span class="lbl">🪔 所授法門</span><br>${s.dharma}</div>
+    <div class="insight">💡 ${s.insight}</div>
+    <div class="q">領悟題：${s.q}</div>
+    <div class="opts" id="opts">${s.o.map((o,i)=>`<button class="opt" data-i="${i}">${o}</button>`).join("")}</div>
+    <div class="feedback" id="fb"></div>
+    <div class="center" id="navArea"></div></div>`;
+  const fb=document.getElementById("fb");
+  const opts=[...document.querySelectorAll(".opt")];
+  opts.forEach(b=>b.onclick=()=>{
+    const i=+b.dataset.i; opts.forEach(x=>x.disabled=true);
+    if(i===s.a){ b.classList.add("correct"); beads++; setBar();
+      fb.className="feedback ok show"; fb.innerHTML=`✅ <b>領悟了！</b> ${s.w}　<span style="color:var(--gold)">+1 🔆</span>`;
+    } else { b.classList.add("wrong"); opts[s.a].classList.add("correct");
+      fb.className="feedback no show"; fb.innerHTML=`💡 正解已標示。 ${s.w}`; }
+    const last = idx+1>=N;
+    document.getElementById("navArea").innerHTML=`<button class="btn" id="nx">${last?"圓滿旅程 →":"前往下一位善知識 →"}</button>`;
+    nx.onclick=()=>{ idx++; if(idx>=N){ phase="reflect"; render(); } else { render(); } };
+  });
+  scrollTop();
+}
+
+function renderReflect(){
+  mLeft.textContent="圓滿・反思";
+  const pct=Math.round(beads/N*100);
+  const medal = pct>=90?"🥇 入法界・大心行者":pct>=70?"🥈 精進善財":pct>=50?"🥉 發心童子":"🌱 初發心";
+  const fields=REFLECT_QS.map(q=>`<label>${q}</label><textarea placeholder="寫下你的想法…"></textarea>`).join("");
+  app.innerHTML=`<div class="screen center">
+      <div class="big">🪷</div><h2>旅程圓滿！</h2>
+      <p class="lead">你陪善財參訪了 ${N} 位善知識，收集 <b style="color:var(--gold)">${beads} 顆法門寶珠（${pct}%）</b>。</p>
+      <div class="pill">${medal}</div>
+      <p class="lead" style="margin-top:12px;">從 <b style="color:var(--gold-soft)">文殊發心</b> →
+        遍參 <b style="color:var(--gold-soft)">各行各業的善知識</b> →
+        <b style="color:var(--gold-soft)">彌勒樓閣</b> → <b style="color:var(--gold-soft)">普賢十大願</b>。
+        善財告訴我們：<b style="color:var(--gold)">善知識遍在一切處，肯謙卑學、依教行，人人皆可入法界。</b></p>
+    </div>
+    <div class="screen reflect" style="margin-top:14px;">
+      <span class="tag">最後一站・反思與討論</span>
+      <h2>把學到的，變成你自己的</h2>
+      <p class="note">沒有標準答案。寫下你的想法，或與同學、師長一起討論 👇</p>
+      ${fields}
+      <div class="row" style="margin-top:18px;">
+        <button class="btn" id="copy">📋 複製我的反思</button>
+        <button class="btn ghost" id="again">↺ 再走一次</button>
+        <a class="btn ghost" href="index.html" style="text-decoration:none">🏠 回樂園</a>
+      </div>
+      <p class="note" id="copied" style="min-height:1.2em;"></p>
+    </div>`;
+  document.getElementById("again").onclick=()=>{ beads=0; idx=0; phase="intro"; render(); };
+  document.getElementById("copy").onclick=()=>{
+    const tas=[...document.querySelectorAll(".reflect textarea")];
+    let out=`《善財童子・五十三參之旅》我的反思（收集 ${beads}/${N} 顆法門寶珠）\n\n`;
+    REFLECT_QS.forEach((q,i)=>{ out+=q+"\n→ "+(tas[i].value.trim()||"（尚未填寫）")+"\n\n"; });
+    navigator.clipboard.writeText(out).then(()=>{
+      document.getElementById("copied").textContent="✅ 已複製，可貼到聊天室或筆記與大家分享！";
+    }).catch(()=>{ document.getElementById("copied").textContent="（無法自動複製，請手動選取）"; });
+  };
+  scrollTop();
+}
+
+render();
+</script>
+</body>
+</html>
